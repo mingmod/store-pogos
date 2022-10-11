@@ -2,7 +2,7 @@
 
 ## Task:
 
-There are example for client and seller resources. Please implement at least the sell resource. If you don't have TS knowledge you should be able to do this task by JS only.
+There are example for client and seller resources. Please implement at least the sell resource. If you don't have TS knowledge you should be able to do this task by JS only. Feel free to make improvement if you think it's necessary. Please try to provide your solution by opening a PR.
 
 ## To run
 
