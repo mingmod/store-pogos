@@ -1,24 +1,36 @@
-# Shop
+# Pogos LLC Software Engineering Exercise - Pipe17 project
 
-## Task:
+## Overview
+Let us imagine we operate a highly popular product stand at the local farmer’s market, offering a variety of products that customers love.
+However, managing inventory, sales, loyalty programs, and customer interactions has become a major challenge.
+To streamline operations and eliminate paper-based processes, we seek an application to simplify these tasks.
 
-There are example for client and seller resources. Please implement at least the sell resource. If you don't have TS knowledge you should be able to do this task by JS only. Feel free to make improvement if you think it's necessary. Please try to provide your solution by opening a PR.
+## Core Use Case
+- Customers select products
+- Products are weighed and priced
+- Customers make payments and receive the receipts and change
+- The same customers may return for additional purchases
 
-## To run
+## Current Challenges
+- Managing high customer traffic and product browsing
+- Inefficient inventory tracking relying on paper records
+- Applying variable discounts to total order sales
+- Pricing products based on weight
+- Implementing daily discounts on specific products
+- Managing rewards for customers with frequent visits
 
-For the best result please use node 16 and npm 8
+## What We're Looking For
+Design a data model and API for the order creation and sending paycheck to client.
+The technology stack should include Node.js and Prisma preferred for the database.
 
-1. npm i
-2. npm run dev
-
-## To debug
-
-Open VScode and in the "Run and debug" drop down select dev and select the run button.
-
-## To lint
-
-npm run lint
-
-## To test the endpoints
-
-There is a postman collection at ./shop.postman_collection.json . You can import it into your postman and use it.
+## Possible Scenarios
+- Customer management
+- Employee tracking
+- Product inventory management
+- Inventory tracking
+- Variable pricing based on weight
+- Daily discounts on specific products
+- Loyalty program management
+- Customer, inventory, and sales reporting
+- Digital receipts
+- Returns processing
