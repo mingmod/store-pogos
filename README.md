@@ -1,44 +1,43 @@
-# TASK UPDATES
+# Task Updates
 
 ## Current Challenges
 
-- Managing high customer traffic and product browsing
-  <br>UPDATE: all client, products, sellers, invoices saved in database, so any browsing pages api and pages can be builded
-- Inefficient inventory tracking relying on paper records
-  <br>UPDATE: all products that client have in inventory saved in database. it's possible to add some log saving on inventory update event, to keep tracking history
-- Applying variable discounts to total order sales
-  <br>UPDATE: created 3 type of sales:
-  <br>`normal` - just sale for some products, visible for everyone
-  <br>`individal` - sale for list of clients, visible for assigned clients
-  <br>`limit` - sale works if some client by enough items to reach sale `orderAmount` limit
-- Pricing products based on weight
-  <br>UPDATE: created 2 type of products:
-  <br>`products sold by piece` - they have fixed `weight` and `price` for it
-  <br>`products sold by weight` - they have no weight and `price` defined for 1000g
-- Implementing daily discounts on specific products
-  <br>UPDATE: all types of sale can be used as daily sales. May be integrated same active date period feature for sales
-- Managing rewards for customers with frequent visits
-  <br>UPDATE: `individual` sale type is perfect for it
+- Managing high customer traffic and product browsing  
+  UPDATE: All client, products, sellers, and invoices are saved in the database, so any browsing pages API and pages can be built.
+- Inefficient inventory tracking relying on paper records  
+  UPDATE: All products that clients have in inventory are saved in the database. It's possible to add some log saving on inventory update event to keep track of history.
+- Applying variable discounts to total order sales  
+  UPDATE: Created three types of sales:
+  - `normal` - just sale for some products, visible for everyone.
+  - `individual` - sale for a list of clients, visible for assigned clients.
+  - `limit` - sale works if some client buys enough items to reach the sale `orderAmount` limit.
+- Pricing products based on weight  
+  UPDATE: Created two types of products:
+  - `products sold by piece` - they have fixed `weight` and `price` for it.
+  - `products sold by weight` - they have no weight and `price` defined for 1000g.
+- Implementing daily discounts on specific products  
+  UPDATE: All types of sale can be used as daily sales. Maybe integrated same active date period feature for sales.
+- Managing rewards for customers with frequent visits  
+  UPDATE: `individual` sale type is perfect for it.
 
 ## What We're Looking For
 
-Design a data model and API for the order creation and sending paycheck to client.
-The technology stack should include Node.js and Prisma preferred for the database.
+Design a data model and API for the order creation and sending a paycheck to the client. The technology stack should include Node.js and Prisma preferred for the database.
 
-UPDATED: `Compleated`
+UPDATED: `Completed`
 
-created api's:
+Created APIs:
 
 - `POST /seller` - create a new seller
 - `POST /client` - create a new client
-- `POST /product` - seller create a new product
-- `POST /sale` - seller create a sale
-- `GET /inventories` - get client inventories (uniq for each seller)
-- `PUT /inventories/update` - update user inventory, add, remove, edit invenoty items. It may aslo remove or create a new inventory
-- `POST /inventories/pay` - client pay for inventory and create an invoice
-- `POST /invoice/refund` - client refund some items from invoice (new `refund` type invocie created with negative total)
+- `POST /product` - seller creates a new product
+- `POST /sale` - seller creates a sale
+- `GET /inventories` - get client inventories (unique for each seller)
+- `PUT /inventories/update` - update user inventory, add, remove, edit inventory items. It may also remove or create a new inventory
+- `POST /inventories/pay` - client pays for inventory and creates an invoice
+- `POST /invoice/refund` - client refunds some items from the invoice (new `refund` type invoice created with negative total)
 
-created kappy test scenario, execution example:
+Created happy test scenario, execution example:
 
 ```
 Happy case, check whole platform functionality
