@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,23 +11,153 @@ model Client {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
-  sales Sale[]
+  // Added relation to SaleClient
+  saleProducts SaleClient[]
+  inventories Inventory[]
+  invoices Invoice[]
 }
 
 model Seller {
-  id    Int    @id @default(autoincrement())
-  name  String
-  sales Sale[]
+  id       Int      @id @default(autoincrement())
+  name     String
+  sales    Sale[]   // A seller can have multiple sales
+  products Product[]
+  inventories Inventory[]
+  invoices Invoice[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Int     // keep price in cents
+  weight      Int?    // gramms or undefined
+  sellerId    Int
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+  // Added relation to SaleProduct
+  saleProducts SaleProduct[]
+  inInventories InventoryItem[]
+  invoiceItems InvoiceItem[]
 }
 
 model Sale {
-  id       Int    @id @default(autoincrement())
-  sellerId Int
-  clientId Int
-  seller   Seller @relation(fields: [sellerId], references: [id])
-  client   Client @relation(fields: [clientId], references: [id])
+  id          Int        @id @default(autoincrement())
+  status      Boolean    @default(false)
+  sale        Int
+  // Enums not supported for this constructor
+  type        String     @default("normal") // individual, normal, limit
+  seller      Seller     @relation(fields: [sellerId], references: [id])
+  sellerId    Int
+  orderAmount Int?       // For limit sales, total order amount threshold
+  saleProducts SaleProduct[]
+  saleClients  SaleClient[]
+  invoices Invoice[]
+  invoiceItemsIndividual InvoiceItem[] @relation("IndividualSale")
+  invoiceItems InvoiceItem[]
 }
 
-//model SaleItem {}
+model SaleProduct {
+  saleId   Int
+  productId Int
+  sale     Sale @relation(fields: [saleId], references: [id])
+  product  Product @relation(fields: [productId], references: [id])
 
-//model Product {}
+  @@id([saleId, productId])
+}
+
+model SaleClient {
+  saleId  Int
+  clientId Int
+  sale    Sale @relation(fields: [saleId], references: [id])
+  client  Client @relation(fields: [clientId], references: [id])
+
+  @@id([saleId, clientId])
+}
+
+model Inventory {
+  id        Int      @id @default(autoincrement())
+  clientId  Int
+  sellerId  Int
+  active    Boolean
+  createdAt DateTime @default(now())
+  paidAt    DateTime?
+  client    Client   @relation(fields: [clientId], references: [id])
+  seller    Seller   @relation(fields: [sellerId], references: [id])
+  items InventoryItem[]
+}
+
+model InventoryItem {
+  inventoryId Int
+  productId   Int
+  count       Int
+  weight      Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id])
+
+  @@id([inventoryId, productId])
+}
+
+// need to dublicate all information for order to keep them static in case if they will be edited or removed
+// need to keep original ids too, in case if we will have some technical issues with platform, it may be good information for technical support
+// One more note about prices: they should be static and calculated by the backend, not through queries, because it is not good to store dynamic values in invoices, that were created previously.
+model Invoice {
+  id                       Int         @id @default(autoincrement())
+  // duplicate client information
+  clientId                 Int
+  clientName               String?
+  clientEmail              String
+  // duplicate seller information
+  sellerId                 Int
+  sellerName               String
+  // duplicate limit sale information
+  limitSaleId              Int?
+  limitSalePercent         Int?        @default(0)
+  // calculated prices
+  orderTotalWithoutLimitSale Int
+  orderTotalWithoutSale    Int
+  orderTotal               Int
+  // date information
+  createdAt                DateTime    @default(now())
+  // is order refund type
+  refund                   Boolean     @default(false)
+  // on which Invoice related refund
+  refundInvoiceId          Int?
+  // relations
+  client                   Client      @relation(fields: [clientId], references: [id])
+  seller                   Seller      @relation(fields: [sellerId], references: [id])
+  limitSale                Sale?       @relation(fields: [limitSaleId], references: [id])
+  refundInvoice            Invoice?    @relation("RefundInvoice", fields: [refundInvoiceId], references: [id])
+  refunds                  Invoice[]   @relation("RefundInvoice")
+  items                    InvoiceItem[]
+}
+
+// same dublications need to do for invoice items (products)
+model InvoiceItem {
+  id                       Int      @id @default(autoincrement())
+  invoiceId                Int
+  // duplicate sales information
+  individualSaleId         Int?
+  individualSalePercent    Int      @default(0)
+  normalSaleId             Int?
+  normalSalePercent        Int      @default(0)
+  // duplicate product information
+  productId                Int
+  productName              String
+  productDescription       String?
+  productWeight            Int?
+  productPrice             Int
+  // duplicate inventory information
+  inventoryCount           Int
+  inventoryWeight          Int
+  // relations
+  individualSale           Sale?    @relation("IndividualSale", fields: [individualSaleId], references: [id])
+  normalSale               Sale?    @relation(fields: [normalSaleId], references: [id])
+  product                  Product  @relation(fields: [productId], references: [id])
+  invoice                  Invoice  @relation(fields: [invoiceId], references: [id])
+  // prices
+  originalPrice Int
+  price Int
+}
